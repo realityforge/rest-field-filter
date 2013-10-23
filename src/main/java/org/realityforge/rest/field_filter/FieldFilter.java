@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 public final class FieldFilter
 {
-  private static final FieldFilter ALLOW_ALL = new FieldFilter( null );
+  private static final FieldFilter ALLOW_ALL = new FieldFilter( (Map<String, FieldFilter>) null );
 
   /**
    * If this field is null then all fields are accepted.
@@ -18,7 +18,13 @@ public final class FieldFilter
   @Nullable
   private final Map<String, FieldFilter> _fields;
 
-  private FieldFilter( final Map<String, FieldFilter> fields )
+  public FieldFilter( @Nullable final String fields )
+    throws ParseException
+  {
+    this( parseFilterMap( fields ) );
+  }
+
+  private FieldFilter( @Nullable final Map<String, FieldFilter> fields )
   {
     _fields = fields;
   }
@@ -56,65 +62,75 @@ public final class FieldFilter
   public static FieldFilter parse( @Nullable final String path )
     throws ParseException
   {
+    return new FieldFilter( path );
+  }
+
+  @Nullable
+  private static Map<String, FieldFilter> parseFilterMap( @Nullable final String path )
+    throws ParseException
+  {
     if ( null == path || "".equals( path ) )
     {
-      return ALLOW_ALL;
+      return null;
     }
-    final Map<String, FieldFilter> fields = new HashMap<String, FieldFilter>();
-    int start = 0;
-    int current = start;
-    int initialBracket = start;
-    int depth = 0;
-    boolean complex = false;
-    while ( current <= path.length() )
+    else
     {
-      if ( 0 != depth && current == path.length() )
+      final Map<String, FieldFilter> fields = new HashMap<String, FieldFilter>();
+      int start = 0;
+      int current = start;
+      int initialBracket = start;
+      int depth = 0;
+      boolean complex = false;
+      while ( current <= path.length() )
       {
-        throw new ParseException( path, current );
-      }
-      else if ( 0 == depth && ( current == path.length() || ',' == path.charAt( current ) ) )
-      {
-        if ( complex )
-        {
-          final String fieldKey = path.substring( start, initialBracket );
-          fields.put( fieldKey, parse( path.substring( initialBracket + 1, current - 1 ) ) );
-        }
-        else
-        {
-          final String fieldName = path.substring( start, current );
-          if( 0 == fieldName.length() )
-          {
-            throw new ParseException( path, current );
-          }
-          fields.put( fieldName, ALLOW_ALL );
-        }
-        start = current + 1;
-        complex = false;
-        initialBracket = -1;
-      }
-      else if ( '[' == path.charAt( current ) )
-      {
-        if ( 0 == depth )
-        {
-          initialBracket = current;
-        }
-        depth++;
-        complex = true;
-      }
-      else if ( ']' == path.charAt( current ) )
-      {
-        if ( 0 == depth )
+        if ( 0 != depth && current == path.length() )
         {
           throw new ParseException( path, current );
         }
-        else
+        else if ( 0 == depth && ( current == path.length() || ',' == path.charAt( current ) ) )
         {
-          depth--;
+          if ( complex )
+          {
+            final String fieldKey = path.substring( start, initialBracket );
+            fields.put( fieldKey, parse( path.substring( initialBracket + 1, current - 1 ) ) );
+          }
+          else
+          {
+            final String fieldName = path.substring( start, current );
+            if ( 0 == fieldName.length() )
+            {
+              throw new ParseException( path, current );
+            }
+            fields.put( fieldName, ALLOW_ALL );
+          }
+          start = current + 1;
+          complex = false;
+          initialBracket = -1;
         }
+        else if ( '[' == path.charAt( current ) )
+        {
+          if ( 0 == depth )
+          {
+            initialBracket = current;
+          }
+          depth++;
+          complex = true;
+        }
+        else if ( ']' == path.charAt( current ) )
+        {
+          if ( 0 == depth )
+          {
+            throw new ParseException( path, current );
+          }
+          else
+          {
+            depth--;
+          }
+        }
+        current++;
       }
-      current++;
-    }
 
-    return new FieldFilter( Collections.unmodifiableMap( fields ) );
+      return Collections.unmodifiableMap( fields );
+    }
   }
 }
