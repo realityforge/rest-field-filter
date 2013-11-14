@@ -11,7 +11,10 @@ public final class FieldFilterTest
   public void simpleFiltering()
     throws Exception
   {
-    final FieldFilter filter = FieldFilter.parse( "foo,bar" );
+    final String rawValue = "foo,bar";
+    final FieldFilter filter = FieldFilter.parse( rawValue );
+
+    assertEquals( filter.getRawValue(), rawValue );
 
     assertTrue( filter.allow( "foo" ) );
     assertTrue( filter.allow( "bar" ) );
@@ -30,6 +33,8 @@ public final class FieldFilterTest
   {
     final FieldFilter filter = FieldFilter.parse( null );
 
+    assertNull( filter.getRawValue() );
+
     assertTrue( filter.allow( "foo" ) );
     assertTrue( filter.allow( "bar" ) );
     assertTrue( filter.allow( "baz" ) );
@@ -42,6 +47,8 @@ public final class FieldFilterTest
   {
     final FieldFilter filter = FieldFilter.parse( "" );
 
+    assertEquals( filter.getRawValue(), "" );
+
     assertTrue( filter.allow( "foo" ) );
     assertTrue( filter.allow( "bar" ) );
     assertTrue( filter.allow( "baz" ) );
@@ -52,7 +59,10 @@ public final class FieldFilterTest
   public void subEmptyField()
     throws Exception
   {
-    final FieldFilter filter = FieldFilter.parse( "foo[]" );
+    final String rawValue = "foo[]";
+    final FieldFilter filter = FieldFilter.parse( rawValue );
+
+    assertEquals( filter.getRawValue(), rawValue );
 
     assertTrue( filter.allow( "foo" ) );
 
@@ -63,7 +73,10 @@ public final class FieldFilterTest
   public void multipleSubFields()
     throws Exception
   {
-    final FieldFilter filter = FieldFilter.parse( "foo[],bar[]" );
+    final String rawValue = "foo[],bar[]";
+    final FieldFilter filter = FieldFilter.parse( rawValue );
+
+    assertEquals( filter.getRawValue(), rawValue );
 
     assertTrue( filter.allow( "foo" ) );
     assertTrue( filter.allow( "bar" ) );
@@ -76,7 +89,10 @@ public final class FieldFilterTest
   public void subFieldsWithFilters()
     throws Exception
   {
-    final FieldFilter filter = FieldFilter.parse( "foo[bar,baz[bik]]" );
+    final String rawValue = "foo[bar,baz[bik]]";
+    final FieldFilter filter = FieldFilter.parse( rawValue );
+
+    assertEquals( filter.getRawValue(), rawValue );
 
     assertTrue( filter.allow( "foo" ) );
     assertFalse( filter.allow( "bar" ) );

@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 
 public final class FieldFilter
 {
-  private static final FieldFilter ALLOW_ALL = new FieldFilter( (Map<String, FieldFilter>) null );
+  private static final FieldFilter ALLOW_ALL = new FieldFilter( null, (Map<String, FieldFilter>) null );
 
   /**
    * If this field is null then all fields are accepted.
@@ -18,17 +18,29 @@ public final class FieldFilter
   @Nullable
   private final Map<String, FieldFilter> _fields;
 
+  /**
+   * Raw input value.
+   */
+  @Nullable
+  private final String _rawValue;
+
   public FieldFilter( @Nullable final String fields )
     throws ParseException
   {
-    this( parseFilterMap( fields ) );
+    this( fields, parseFilterMap( fields ) );
   }
 
-  private FieldFilter( @Nullable final Map<String, FieldFilter> fields )
+  private FieldFilter( @Nullable final String rawValue, @Nullable final Map<String, FieldFilter> fields )
   {
+    _rawValue = rawValue;
     _fields = fields;
   }
 
+  @Nullable
+  public String getRawValue()
+  {
+    return _rawValue;
+  }
   public boolean allow( @Nonnull final String field )
   {
     return null == _fields || _fields.containsKey( field );
