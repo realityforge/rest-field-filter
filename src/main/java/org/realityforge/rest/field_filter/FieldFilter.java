@@ -41,11 +41,24 @@ public final class FieldFilter
   {
     return _rawValue;
   }
+
+  /**
+   * Return true if field should not be filtered.
+   *
+   * @param field field to evaluate.
+   * @return false, to filter field, true otherwise.
+   */
   public boolean allow( @Nonnull final String field )
   {
     return null == _fields || _fields.containsKey( field );
   }
 
+  /**
+   * Return a sub filter for a field.
+   *
+   * @param field the field to create a filter for.
+   * @return the new field filter.
+   */
   @Nonnull
   public FieldFilter subFilter( @Nonnull final String field )
   {
