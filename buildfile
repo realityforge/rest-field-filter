@@ -19,4 +19,5 @@ define 'rest-field-filter' do
 
   package :jar
   package :sources
+  package :javadoc
 end
