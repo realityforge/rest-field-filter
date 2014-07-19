@@ -10,7 +10,7 @@ define 'rest-field-filter' do
   compile.options.target = '1.6'
   compile.options.lint = 'all'
 
-  pom.add_apache2_license
+  pom.add_apache_v2_license
   pom.add_github_project('realityforge/rest-field-filter')
   pom.add_developer('realityforge', 'Peter Donald')
   pom.provided_dependencies.concat [:javax_annotation]
