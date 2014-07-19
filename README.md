@@ -35,4 +35,3 @@ A typical use in a Jax-RS application looks like
       g.writeEnd();
       ...
     }
-
