@@ -3,4 +3,4 @@ repositories:
    - https://repo.maven.apache.org/maven2
 
 artifacts:
-  javax_annotation: org.realityforge.javax.annotation:javax.annotation:jar:1.0.0
+  javax_annotation: org.realityforge.javax.annotation:javax.annotation:jar:1.0.1
